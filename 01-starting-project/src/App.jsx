@@ -1,36 +1,111 @@
-import reactImg from './assets/react-core-concepts.png';
-
-const reactDescriptions = ['Fundamental', 'Crucial', 'Core'];
-
-function genRandomInt(max) {
-  return Math.floor(Math.random() * (max + 1));
-}
-
-function Header() {
-  const description = reactDescriptions[genRandomInt(2)];
-  
-  return (
-    <header>
-      <img src={reactImg} alt="Stylized atom" />
-      <h1>React Essentials</h1>
-      <p>
-        {/* with {} u tell jsx and react that you wanna output a dinamic value*/}
-        {description} React concepts you will need for almost any app you are
-        going to build!
-      </p>
-    </header>
-  );
-}
+import { useState } from "react";
+import { CORE_CONCEPTS } from "./data";
+import Header from "./components/Header/Header.jsx";
+import CoreConcept from "./components/CoreConcept";
+import TabButton from "./components/TabButton.jsx";
+import { EXAMPLES } from "./data";
 
 function App() {
+  const [selectedTopic, setSelectedTopic] = useState();
+
+  function handleSelect(selectedButton) {
+    //selectedButton => "components", "jsx", "props", "state"
+    setSelectedTopic(selectedButton);
+    //console.log(`Selected: ${selectedTopic}`);
+  }
+
+  console.log("APP COMPONENT RENDERING");
+
+  let tabContent = <p>Please select a topic.</p>;
+
+  if (selectedTopic) {
+    tabContent = (
+      <div id="tab-content">
+        <h3>{EXAMPLES[selectedTopic].title}</h3>
+        <p>{EXAMPLES[selectedTopic].description}</p>
+        <pre>
+          <code>{EXAMPLES[selectedTopic].code}</code>
+        </pre>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Header />
       <main>
-        <h2>Time to get started!</h2>
+        <section id="core-concepts">
+          <h2>Core Concepts</h2>
+          <ul>
+            <CoreConcept
+              title={CORE_CONCEPTS[0].title}
+              description={CORE_CONCEPTS[0].description}
+              image={CORE_CONCEPTS[0].image}
+            />
+            <CoreConcept {...CORE_CONCEPTS[1]} />
+            <CoreConcept {...CORE_CONCEPTS[2]} />
+            <CoreConcept {...CORE_CONCEPTS[3]} />
+          </ul>
+        </section>
+        <section id="examples">
+          <h2>Examples</h2>
+          <menu>
+            {/*In this case the method of "handleSelect() will not be executed at first render,
+            because there is an arrow function and it just will be executed when the user use the botton*/}
+            <TabButton
+              isSelected={selectedTopic === "components"}
+              onSelect={() => handleSelect("components")}
+            >
+              Components
+            </TabButton>
+            <TabButton
+              isSelected={selectedTopic === "jsx"}
+              onSelect={() => handleSelect("jsx")}
+            >
+              JSX
+            </TabButton>
+            <TabButton
+              isSelected={selectedTopic === "props"}
+              onSelect={() => handleSelect("props")}
+            >
+              Props
+            </TabButton>
+            <TabButton
+              isSelected={selectedTopic === "state"}
+              onSelect={() => handleSelect("state")}
+            >
+              State
+            </TabButton>
+          </menu>
+          {tabContent}
+        </section>
       </main>
     </div>
   );
 }
 
+/*
+Diferent way to write the same code:
+
+          {!selectedTopic && <p>Please select a topic.</p>}
+          {selectedTopic && (
+            <div id="tab-content">
+              <h3>{EXAMPLES[selectedTopic].title}</h3>
+              <p>{EXAMPLES[selectedTopic].description}</p>
+              <pre>
+                <code>{EXAMPLES[selectedTopic].code}</code>
+              </pre>
+            </div>
+          )}
+
+
+          {!selectedTopic ? <p>Please select a topic.</p> : null}
+          {selectedTopic ? <div id="tab-content">
+            <h3>{EXAMPLES[selectedTopic].title}</h3>
+            <p>{EXAMPLES[selectedTopic].description}</p>
+            <pre>
+              <code>{EXAMPLES[selectedTopic].code}</code>
+            </pre>
+          </div> : null}
+*/
 export default App;
