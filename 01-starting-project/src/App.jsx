@@ -1,81 +1,19 @@
-import { useState } from "react";
-import { CORE_CONCEPTS } from "./data";
+import { useState, Fragment } from "react";
 import Header from "./components/Header/Header.jsx";
-import CoreConcept from "./components/CoreConcept";
-import TabButton from "./components/TabButton.jsx";
-import { EXAMPLES } from "./data";
-
+import CoreConcepts from "./components/CoreConcepts.jsx";
+import Examples from "./components/Examples.jsx";
 function App() {
-  const [selectedTopic, setSelectedTopic] = useState();
-
-  function handleSelect(selectedButton) {
-    //selectedButton => "components", "jsx", "props", "state"
-    setSelectedTopic(selectedButton);
-    //console.log(`Selected: ${selectedTopic}`);
-  }
-
-  console.log("APP COMPONENT RENDERING");
-
-  let tabContent = <p>Please select a topic.</p>;
-
-  if (selectedTopic) {
-    tabContent = (
-      <div id="tab-content">
-        <h3>{EXAMPLES[selectedTopic].title}</h3>
-        <p>{EXAMPLES[selectedTopic].description}</p>
-        <pre>
-          <code>{EXAMPLES[selectedTopic].code}</code>
-        </pre>
-      </div>
-    );
-  }
 
   return (
-    <div>
+    //instead of using <div> you can use <Fragment> to avoid adding an extra node to the DOM
+    //or you can use the empty tag <> </> to avoid adding an extra node to the DOM
+    <>
       <Header />
       <main>
-        <section id="core-concepts">
-          <h2>Core Concepts</h2>
-          <ul>
-            {CORE_CONCEPTS.map((conceptItem) => (
-              <CoreConcept key={conceptItem.title} {...conceptItem} />
-            ))}
-          </ul>
-        </section>
-        <section id="examples">
-          <h2>Examples</h2>
-          <menu>
-            {/*In this case the method of "handleSelect() will not be executed at first render,
-            because there is an arrow function and it just will be executed when the user use the botton*/}
-            <TabButton
-              isSelected={selectedTopic === "components"}
-              onSelect={() => handleSelect("components")}
-            >
-              Components
-            </TabButton>
-            <TabButton
-              isSelected={selectedTopic === "jsx"}
-              onSelect={() => handleSelect("jsx")}
-            >
-              JSX
-            </TabButton>
-            <TabButton
-              isSelected={selectedTopic === "props"}
-              onSelect={() => handleSelect("props")}
-            >
-              Props
-            </TabButton>
-            <TabButton
-              isSelected={selectedTopic === "state"}
-              onSelect={() => handleSelect("state")}
-            >
-              State
-            </TabButton>
-          </menu>
-          {tabContent}
-        </section>
+        <CoreConcepts />
+        <Examples />
       </main>
-    </div>
+    </>
   );
 }
 
